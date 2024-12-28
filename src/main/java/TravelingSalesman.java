@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TravelingSalesman {
@@ -75,9 +74,11 @@ public class TravelingSalesman {
                 }
             }
 
-            distances.add(currentCityIndex + ";" + minDistance);
-            visited[nextCityIndex] = true;
-            currentCityIndex = nextCityIndex;
+            if (nextCityIndex != -1) {
+                visited[nextCityIndex] = true;
+                currentCityIndex = nextCityIndex;
+                distances.add(currentCityIndex + ";" + minDistance);
+            }
         }
 
         double returnDistance = euclideanDistance(
@@ -86,10 +87,12 @@ public class TravelingSalesman {
                 cities.get(startIndex).latitude,
                 cities.get(startIndex).longitude
         );
-        distances.add(startIndex + ";" + returnDistance);
+
+        distances.add(startIndex + ";" + returnDistance); // Добавляем расстояние для возврата
 
         return distances;
     }
+
 
     private static double euclideanDistance(double lat1, double lon1, double lat2, double lon2) {
         return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2));
@@ -97,14 +100,11 @@ public class TravelingSalesman {
 
     private static void writeDistancesToFile(List<String> distances, String filename) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-            bw.write("Step;Id;Predicted\n");
+            bw.write("Step | IdNextCity | Distance\n");
             for (int i = 0; i < distances.size(); i++) {
                 String[] city = distances.get(i).split(";");
                 double distance = Double.parseDouble(city[1]);
-//                if (distance < 0) {
-//                    distance = 0;
-//                }
-                bw.write(i + ";" + city[0] + ";" + distance + "\n");
+                bw.write(i + 1 + " | " + city[0] + " | " + distance + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
