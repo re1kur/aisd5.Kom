@@ -110,6 +110,7 @@ public class TravelingSalesman {
             e.printStackTrace();
         }
     }
+
     private static double calculateTotalDistance(List<String> distances) {
         double totalDistance = 0.0;
         for (String city : distances) {
